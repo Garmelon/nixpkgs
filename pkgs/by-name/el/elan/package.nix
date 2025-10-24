@@ -3,7 +3,7 @@
   lib,
   runCommand,
   patchelf,
-  makeWrapper,
+  makeBinaryWrapper,
   pkg-config,
   curl,
   runtimeShell,
@@ -12,6 +12,7 @@
   fetchFromGitHub,
   rustPlatform,
   libiconv,
+  writableTmpDirAsHomeHook,
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -28,8 +29,9 @@ rustPlatform.buildRustPackage rec {
   cargoHash = "sha256-CLeFXpCfaTTgbr6jmUmewArKfkOquNhjlIlwtoaJfZw=";
 
   nativeBuildInputs = [
+    makeBinaryWrapper
     pkg-config
-    makeWrapper
+    writableTmpDirAsHomeHook
   ];
 
   OPENSSL_NO_VENDOR = 1;
@@ -74,7 +76,6 @@ rustPlatform.buildRustPackage rec {
     popd
 
     # tries to create .elan
-    export HOME=$(mktemp -d)
     mkdir -p "$out/share/"{bash-completion/completions,fish/vendor_completions.d,zsh/site-functions}
     $out/bin/elan completions bash > "$out/share/bash-completion/completions/elan"
     $out/bin/elan completions fish > "$out/share/fish/vendor_completions.d/elan.fish"
