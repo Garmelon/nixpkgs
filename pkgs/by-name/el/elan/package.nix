@@ -91,6 +91,7 @@ rustPlatform.buildRustPackage rec {
     export use_response_file_by_default=0
     substituteAll ${../../../build-support/bintools-wrapper/ld-wrapper.sh} $out/nix-support/ld-wrapper.sh
     chmod +x $out/nix-support/ld-wrapper.sh
+    cp ${stdenv.cc}/nix-support/dynamic-linker $out/nix-support/dynamic-linker
   '';
 
   # https://github.com/NixOS/nixpkgs/blob/cae2bb97b01c4c77849e46a41a22e0a62926fc0f/pkgs/development/tools/rust/rustup/default.nix#L143-L152
