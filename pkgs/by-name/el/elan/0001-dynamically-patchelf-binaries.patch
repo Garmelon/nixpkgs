@@ -1,8 +1,8 @@
 diff --git a/src/elan-dist/src/component/package.rs b/src/elan-dist/src/component/package.rs
-index 89ff5ce..be51970 100644
+index 89ff5ce..1a5fddc 100644
 --- a/src/elan-dist/src/component/package.rs
 +++ b/src/elan-dist/src/component/package.rs
-@@ -51,6 +51,47 @@ fn unpack_without_first_dir<R: Read>(archive: &mut tar::Archive<R>, path: &Path)
+@@ -51,6 +51,50 @@ fn unpack_without_first_dir<R: Read>(archive: &mut tar::Archive<R>, path: &Path)
          entry
              .unpack(&full_path)
              .chain_err(|| ErrorKind::ExtractingPackage)?;
@@ -27,7 +27,10 @@ index 89ff5ce..be51970 100644
 +
 +    if dest_path.file_name() == Some(::std::ffi::OsStr::new("ld.lld")) {
 +        // https://github.com/NixOS/nixpkgs/blob/0ea2f6d48ce952cc86f7104f8a51ad61fa9b6aad/pkgs/development/tools/rust/rustup/0001-dynamically-patchelf-binaries.patch#L17
-+        let unwrapped_path = dest_path.with_extension("lld.orig");
++        // ld.lld must keep the same binary name, or else it won't work.
++        let unwrapped_dir = dest_path.with_file_name("unwrapped");
++        let unwrapped_path = unwrapped_dir.join("ld.lld");
++        ::std::fs::create_dir_all(unwrapped_dir)?;
 +        ::std::fs::rename(dest_path, &unwrapped_path)?;
 +        let mut ld_wrapper_path = std::env::current_exe()?
 +            .parent()
@@ -35,11 +38,11 @@ index 89ff5ce..be51970 100644
 +            .with_file_name("nix-support");
 +        ld_wrapper_path.push("ld-wrapper.sh");
 +        let wrapped_script = format!(
-+            "#!/usr/bin/env bash
++            r#"#!/usr/bin/env bash
 +set -eu -o pipefail +o posix
 +shopt -s nullglob
-+export PROG=\"$0.orig\"
-+\"{}\" $@",
++export PROG="$(dirname "$0")/unwrapped/ld.lld"
++"{}" $@"#,
 +            ld_wrapper_path.to_string_lossy(),
 +        );
 +        ::std::fs::write(dest_path, wrapped_script)?;
