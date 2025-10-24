@@ -1,8 +1,8 @@
 diff --git a/src/elan-dist/src/component/package.rs b/src/elan-dist/src/component/package.rs
-index 89ff5ce..95e2b99 100644
+index 89ff5ce..be51970 100644
 --- a/src/elan-dist/src/component/package.rs
 +++ b/src/elan-dist/src/component/package.rs
-@@ -51,6 +51,48 @@ fn unpack_without_first_dir<R: Read>(archive: &mut tar::Archive<R>, path: &Path)
+@@ -51,6 +51,47 @@ fn unpack_without_first_dir<R: Read>(archive: &mut tar::Archive<R>, path: &Path)
          entry
              .unpack(&full_path)
              .chain_err(|| ErrorKind::ExtractingPackage)?;
@@ -38,9 +38,8 @@ index 89ff5ce..95e2b99 100644
 +            "#!/usr/bin/env bash
 +set -eu -o pipefail +o posix
 +shopt -s nullglob
-+export PROG=\"{}\"
++export PROG=\"$0.orig\"
 +\"{}\" $@",
-+            unwrapped_path.to_string_lossy(),
 +            ld_wrapper_path.to_string_lossy(),
 +        );
 +        ::std::fs::write(dest_path, wrapped_script)?;
