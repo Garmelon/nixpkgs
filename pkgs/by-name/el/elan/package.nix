@@ -89,7 +89,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
       asl20 # or
       mit
     ];
-    maintainers = [ ];
+    maintainers = with lib.maintainers; [ garmelon ];
     mainProgram = "elan";
   };
 })
