@@ -10255,6 +10255,11 @@
     github = "luna-spirito";
     githubId = 29687558;
   };
+  garmelon = {
+    name = "Garmelon";
+    github = "Garmelon";
+    githubId = 11077553;
+  };
   garrison = {
     email = "jim@garrison.cc";
     github = "garrison";
